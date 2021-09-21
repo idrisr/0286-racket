@@ -50,23 +50,16 @@
   (lambda () (g 0))
   )
 
-; Write a function vector-assoc that takes a value v and a vector vec. It should
-; behave like Racket’s assoc library function except
-; (1) it processes a vector (Racket’s name for an array) instead of a list,
-; (2) it allows vector elements not to be pairs in which case it skips them, and
-; (3) it always takes exactly two arguments.
-
-; Process the vector elements in order starting from 0. You must use
-; library functions vector-length, vector-ref, and equal?. Return #f if no vector
-; element is a pair with a car field equal to v, else return the first pair with
-; an equal car field. Sample solution is 9 lines, using one local recursive helper
-; function.
-
 (define (vector-assoc v vec)
   (define (helper n)
-    (cond [(= n (vector-length vec)) #f]
-          [(pair? (vector-ref vec n)) (if (equal? (car (vector-ref vec n)) v) (vector-ref vec n) (helper (+ n 1)))]
-          [#t (helper (+ n 1))]))
+    (if (= n (vector-length vec))
+        #f
+        (let ([val (vector-ref vec n)])
+        (cond
+          [(pair? val) (if (equal? (car val) v)
+                           val
+                           (helper (+ n 1)))]
+          [#t (helper (+ n 1))]))))
   (helper 0))
 
 
@@ -90,4 +83,4 @@
 (vector-assoc 3 #4(a b))
 (vector-assoc 3 #4((cons 0 1)))
 (define v (vector (cons 2 1) (cons 3 1) (cons 4 1) (cons 5 1)))
-(vector-assoc 33 v)
+(vector-assoc 23 v)
