@@ -46,15 +46,14 @@
 ; Sample solution: 4 lines. Hint: Use a thunk that when called uses s and recursion.
 ; Note: One of the provided tests in the file using graphics uses (stream-add-zero dan-then-dog) with place-repeatedly
 (define (stream-add-zero stream)
-  (define (f stream)
-    (let ([pr (stream)])
-      (cons (cons 0 (car pr)) (lambda() (f (cdr pr))))))
-  (f stream))
+  (let ([pr (stream)])
+    (cons (cons 0 (car pr)) (lambda () (stream-add-zero (cdr pr))))))
   
 
 (stream-for-n-steps funny-number-stream 20)
 (stream-for-n-steps twoz 10)
 (stream-for-n-steps dan-then-dog 5)
-(stream-add-zero twoz)
+((cdr (stream-add-zero twoz)))
+(car (stream-add-zero twoz))
 (cdr (stream-add-zero twoz))
-(stream-for-n-steps (stream-add-zero twoz) 5)
+(stream-for-n-steps (lambda () (stream-add-zero funny-number-stream)) 15)
