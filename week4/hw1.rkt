@@ -40,11 +40,6 @@
     (cons x (lambda () (f (* x 2))))); (x, g(f(x))
   (f 2))
 
-; Write a function stream-add-zero that takes a stream s and returns another stream.
-; If s would produce v for its ith element,
-; then (stream-add-zero s) would produce the pair (0 . v) for its ith element.
-; Sample solution: 4 lines. Hint: Use a thunk that when called uses s and recursion.
-; Note: One of the provided tests in the file using graphics uses (stream-add-zero dan-then-dog) with place-repeatedly
 (define (stream-add-zero stream)
   (let ([pr (stream)])
     (lambda () (cons (cons 0 (car pr)) (lambda () ((stream-add-zero (cdr pr))))))))
@@ -55,11 +50,44 @@
   (lambda () (g 0))
   )
 
+; Write a function vector-assoc that takes a value v and a vector vec. It should
+; behave like Racket’s assoc library function except
+; (1) it processes a vector (Racket’s name for an array) instead of a list,
+; (2) it allows vector elements not to be pairs in which case it skips them, and
+; (3) it always takes exactly two arguments.
+
+; Process the vector elements in order starting from 0. You must use
+; library functions vector-length, vector-ref, and equal?. Return #f if no vector
+; element is a pair with a car field equal to v, else return the first pair with
+; an equal car field. Sample solution is 9 lines, using one local recursive helper
+; function.
+
+(define (vector-assoc v vec)
+  (define (helper n)
+    (cond [(= n (vector-length vec)) #f]
+          [(pair? (vector-ref vec n)) (if (equal? (car (vector-ref vec n)) v) (vector-ref vec n) (helper (+ n 1)))]
+          [#t (helper (+ n 1))]))
+  (helper 0))
+
+
 (define xs (range 8))
 (define ys '("idris" "raja"))
-  
+
+#|
 (stream-for-n-steps funny-number-stream 20)
 (stream-for-n-steps twoz 10)
 (stream-for-n-steps dan-then-dog 5)
 (stream-for-n-steps (stream-add-zero funny-number-stream) 16)
+|#
+
 (stream-for-n-steps (stream-add-zero (cycle-lists xs ys)) 6)
+(define a (stream-for-n-steps (cycle-lists xs ys) 6))
+
+#("a" "b" "c")
+#(name (that tune))
+#7(baldwin bruce)
+
+(vector-assoc 3 #4(a b))
+(vector-assoc 3 #4((cons 0 1)))
+(define v (vector (cons 2 1) (cons 3 1) (cons 4 1) (cons 5 1)))
+(vector-assoc 33 v)
