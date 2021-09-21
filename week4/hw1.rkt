@@ -9,7 +9,7 @@
 (define (list-nth-mod xs n)
   (cond  [(< n 0) (error "list-nth-mod: negative number")]
          [(= (length xs) 0) (error "list-nth-mod: empty list")]
-         [#t (car (list-tail xs (remainder (length xs) n)))]))
+         [#t (car (list-tail xs (remainder n (length xs))))]))
 
 (define (stream-maker g arg)
   (define (f x)
@@ -47,13 +47,19 @@
 ; Note: One of the provided tests in the file using graphics uses (stream-add-zero dan-then-dog) with place-repeatedly
 (define (stream-add-zero stream)
   (let ([pr (stream)])
-    (cons (cons 0 (car pr)) (lambda () (stream-add-zero (cdr pr))))))
+    (lambda () (cons (cons 0 (car pr)) (lambda () ((stream-add-zero (cdr pr))))))))
   
+(define (cycle-lists xs ys)
+  (define (g n)
+    (cons (cons (list-nth-mod xs n) (list-nth-mod ys n)) (lambda () (g (+ n 1)))))
+  (lambda () (g 0))
+  )
 
+(define xs (range 8))
+(define ys '("idris" "raja"))
+  
 (stream-for-n-steps funny-number-stream 20)
 (stream-for-n-steps twoz 10)
 (stream-for-n-steps dan-then-dog 5)
-((cdr (stream-add-zero twoz)))
-(car (stream-add-zero twoz))
-(cdr (stream-add-zero twoz))
-(stream-for-n-steps (lambda () (stream-add-zero funny-number-stream)) 15)
+(stream-for-n-steps (stream-add-zero funny-number-stream) 16)
+(stream-for-n-steps (stream-add-zero (cycle-lists xs ys)) 6)
