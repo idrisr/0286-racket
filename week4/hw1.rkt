@@ -66,21 +66,33 @@
 (define xs (range 8))
 (define ys '("idris" "raja"))
 
-#|
+
 (stream-for-n-steps funny-number-stream 20)
 (stream-for-n-steps twoz 10)
 (stream-for-n-steps dan-then-dog 5)
 (stream-for-n-steps (stream-add-zero funny-number-stream) 16)
-|#
+
 
 (stream-for-n-steps (stream-add-zero (cycle-lists xs ys)) 6)
 (define a (stream-for-n-steps (cycle-lists xs ys) 6))
 
-#("a" "b" "c")
-#(name (that tune))
-#7(baldwin bruce)
-
-(vector-assoc 3 #4(a b))
-(vector-assoc 3 #4((cons 0 1)))
-(define v (vector (cons 2 1) (cons 3 1) (cons 4 1) (cons 5 1)))
-(vector-assoc 23 v)
+(define (cached-assoc xs n)
+  (letrec ([memo (make-vector n #f)]
+           [i 0]
+           [f (lambda (x)
+                (let ([ans (vector-assoc x memo)])
+                  (if ans
+                      (cdr ans)
+                      (let ([newans (assoc x xs)])
+                        (begin
+                          (vector-set! memo (remainder i n) (cons x newans))
+                          (set! i (+ 1 i))
+                          newans
+                          )
+                        )
+                      )
+                  )
+                )]
+           )
+    f)
+  )
