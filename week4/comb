@@ -1,0 +1,14 @@
+I = a -> a
+K = a -> b -> a
+S = (a->b->c) -> (a->b) -> a -> c
+B = S(KS)S = (b->c)->(a->b)->a->c
+C = S(BBS)(KK) = (a->b->c) -> b -> a -> c
+W = SS(KI) = (a->a->b) -> a -> b
+CI = a -> (a->b) -> b
+CB = (a->b) -> (b->c) -> a -> c
+SKSI = (a->b) -> a -> b
+succ = SB = ((b->c)->a->b) -> (b->c) -> a -> c
+KI = a->b->b
+1 = SB(KI) = (a->b) -> a -> b
+ChN = (a->a) -> a -> a
+D = a1->a2 -> ((b->a2) -> a1 -> c) -> c
